@@ -1,0 +1,117 @@
+{% extends 'personal/base.html' %}
+
+{% block container %}
+
+    <form method="post" action="">{% csrf_token %}
+
+        <br/>
+        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Google Keep Backup</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+
+                {% if failed %}<br/>
+                    Login failed. Use
+                    <a target="_blank" href="https://accounts.google.com/b/0/DisplayUnlockCaptcha">this link</a>
+                    to allow access temporarily and try again.
+                {% endif %}
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" name="email" value="{{ email }}" type="text" id="email">
+                    <label class="mdl-textfield__label" for="email">Email ID</label>
+                </div>
+
+                The passwords you enter are never saved. <br/>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" name="password" type="password" id="password">
+                    <label class="mdl-textfield__label" for="password">Passworord or App Password:</label>
+                </div>
+                <br/>
+
+                <a target="_blank" href="https://myaccount.google.com/apppasswords">Get your app password</a><br/>
+                App password works only if 2-factor authentication is enabled.
+
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+                       name="backup_submit" value="Get Backup">
+            </div>
+
+            <div class="mdl-card__menu">
+                <a href="https://keep.google.com" target="_blank"><img alt="Google Keep Logo"
+                                                                       src="https://www.google.com/images/icons/product/keep-512.png"
+                                                                       height="40px" width="40px"/></a>
+
+            </div>
+        </div>
+        <br/>
+    </form>
+
+    {% if data %}
+        <p>File export coming soon. You can save this page as a backup for now.</p>
+        <p>{{ datetime }}</p>
+        <h3>Lists: </h3>
+        {% for list in data.lists %}
+
+            <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">{{ list.title }}</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <ul>
+                        {% for item in list.items %}
+                            <li>
+                                {% if item.checked %}
+                                    <del>{{ item.text }}</del>
+                                {% else %}
+                                    {{ item.text }}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    {% for label in list.labels %}
+                        <span class="mdl-chip">
+                            <span class="mdl-chip__text">{{ label }}</span>
+                        </span>
+                    {% endfor %}
+                    {% if list.archived %}
+                        <span class="mdl-chip mdl-color--teal">
+                            <span class="mdl-chip__text">ARCHIVED</span>
+                        </span>
+                    {% endif %}
+                </div>
+            </div> <br/>
+
+        {% endfor %}
+        <h3>Notes:</h3>
+
+        {% for note in data.notes %}
+            <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">{{ note.title }}</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    {{ note.text }}
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    {% for label in note.labels %}
+                        <span class="mdl-chip">
+                            <span class="mdl-chip__text">{{ label }}</span>
+                        </span>
+                    {% endfor %}
+                    {% if note.archived %}
+                        <span class="mdl-chip mdl-color--teal">
+                            <span class="mdl-chip__text">ARCHIVED</span>
+                        </span>
+                    {% endif %}
+                </div>
+            </div> <br/>
+        {% endfor %}
+    {% endif %}
+
+
+{% endblock container %}
