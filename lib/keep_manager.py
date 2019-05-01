@@ -1,5 +1,4 @@
 import gkeepapi
-import keyring
 import json
 
 from gkeepapi.node import List, Note
@@ -34,9 +33,8 @@ class KeepManager:
     def login(self):
         login_status = False
         try:
-            master_token = keyring.get_password(KeepManager.keyring_key, self.email)
+            master_token = None  # keyring.get_password(KeepManager.keyring_key, self.email)
         except Exception as exception:
-            print(exception)
             master_token = None
         if master_token is None:
             try:
@@ -51,7 +49,7 @@ class KeepManager:
 
         try:
             if login_status:
-                keyring.set_password(KeepManager.keyring_key, self.email, self.keep.getMasterToken())
+                pass  # keyring.set_password(KeepManager.keyring_key, self.email, self.keep.getMasterToken())
         except Exception as exception:
             print(exception)
 
